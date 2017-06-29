@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<%- include partials/header.ejs %>
+
+<div class="mdl-grid">
+    <div class="mdl-layout-spacer"></div>
+    <div class="mdl-cell mdl-cell--10-col">
+<form name="questionsForm" id="questionsForm" method="post" action="/save">
+
+<% pitanja.forEach(function(pitanje) { %>
+    <input type="hidden" name="pitanje_id" value="<%= pitanje.id %>" >
+    <input type="hidden" name="upitnik_id" id="upitnik" value="<%= pitanje.upitnik_id %>" >
+<% switch (pitanje.tip_pitanja_id) {
+    case 1: %>
+<div id="que<%= pitanje.id %>" class="mdl-card mdl-cell mdl-cell--12-col mdl-card__supporting-text que">
+<h4> <%= pitanje.tekst %> </h4><label style="color: red;" id="lbl<%= pitanje.id %>"></label>
+
+<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input text" type="text" id="odgovor_tekst" name="<%= pitanje.id %>">
+    <label class="mdl-textfield__label" for="odgovor_tekst">Tekst...</label>
+</div>
+</div>
+
+<% break; %>
+<% case 2: %>
+<div id="que<%= pitanje.id %>" class="mdl-card mdl-cell mdl-cell--12-col mdl-card__supporting-text que">
+    <h4> <%= pitanje.tekst %> </h4><label style="color: red;" id="lbl<%= pitanje.id %>"></label>
+<ul class="demo-list-control mdl-list">
+    <li class="mdl-list__item">
+         <span class="mdl-list__item-primary-content">
+        <label>Da</label>
+             </span>
+        <span class="mdl-list__item-secondary-action">
+            <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="list-option-yes">
+        <input  id="list-option-yes" class="mdl-radio__button" type="radio" name="<%= pitanje.id %>" value="true">
+            </label>
+        </span>
+    </li>
+
+    <li class="mdl-list__item">
+         <span class="mdl-list__item-primary-content">
+        <label>Ne</label>
+             </span>
+        <span class="mdl-list__item-secondary-action">
+            <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="list-option-no">
+        <input  id="list-option-no" class="mdl-radio__button" type="radio" name="<%= pitanje.id %>" value="false">
+            </label>
+        </span>
+    </li>
+</ul>
+</div>
+
+<% break; %>
+<% case 3: %>
+<div id="que<%= pitanje.id %>" class="mdl-card mdl-cell mdl-cell--12-col mdl-card__supporting-text que">
+<h4> <%= pitanje.tekst %> </h4><label style="color: red;" id="lbl<%= pitanje.id %>"></label>
+<ul class="demo-list-control mdl-list">
+    <% odgovori.forEach(function(odgovor) { %>
+    <% if(pitanje.id == odgovor.pitanje_id){ %>
+
+    <li class="mdl-list__item">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-<%= odgovor.id %>">
+            <input type="checkbox" id="checkbox-<%= odgovor.id %>" name="<%= pitanje.id %>"   value="<%= odgovor.tekst %>" class="mdl-checkbox__input">
+            <span class="mdl-checkbox__label"><%= odgovor.tekst %></span>
+        </label>
+    </li>
+    <% }%>
+    <% }); %>
+</ul>
+</div>
+<% break; %>
+<% case 4: %>
+<div id="que<%= pitanje.id %>" class="mdl-card mdl-cell mdl-cell--12-col mdl-card__supporting-text que">
+<h4> <%= pitanje.tekst %> </h4><label style="color: red;" id="lbl<%= pitanje.id %>"></label>
+<ul class="demo-list-control mdl-list" >
+    <% odgovori.forEach(function(odgovor) { %>
+    <% if(pitanje.id == odgovor.pitanje_id){ %>
+
+    <li class="mdl-list__item">
+         <span class="mdl-list__item-primary-content">
+        <label><%= odgovor.tekst %></label>
+             </span>
+        <span class="mdl-list__item-secondary-action">
+            <label class="demo-list-radio mdl-radio mdl-js-radio mdl-js-ripple-effect" for="list-option-<%=odgovor.id%>">
+        <input  id="list-option-<%=odgovor.id%>" class="mdl-radio__button" type="radio" name="<%= pitanje.id %>" value="<%= odgovor.tekst %>">
+            </label>
+
+        </span>
+    </li>
+    <% }%>
+    <% }); %>
+</ul>
+</div>
+<% break; %>
+<% } %>
+<% }); %>
+
+</br>
+<button id="show-dialog" type="button" onclick="validateQue()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">Sačuvaj</button>
+    </br></br>
+    <dialog class="mdl-dialog">
+    <p class="mdl-dialog__title">Korisnički podaci</p>
+
+    <div class="mdl-dialog__content">
+
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="ime" name="ime">
+            <label class="mdl-textfield__label" for="ime">Ime</label>
+            <span id="ime_error" class="mdl-textfield__error"></span>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text"  id="prezime" name="prezime">
+            <label class="mdl-textfield__label" for="prezime">Prezime</label>
+            <span id="prezime_error" class="mdl-textfield__error"></span>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="email" id="email" name="email">
+            <label class="mdl-textfield__label" for="email">Email</label>
+            <span id="email_error" class="mdl-textfield__error"></span>
+        </div>
+
+        <label style="color: red;" id="lblUser"></label>
+    </div>
+
+    <div class="mdl-dialog__actions">
+        <input type="submit" onclick="return validateUser()" value="Spremi" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" >
+        <button type="button" class="mdl-button close">Prekini</button>
+    </div>
+
+</dialog>
+
+</form>
+</div>
+<div class="mdl-layout-spacer"></div>
+</div>
+<script>
+    var dialog = document.querySelector('dialog');
+    if (! dialog.showModal) {
+        dialogPolyfill.registerDialog(dialog);
+    }
+    dialog.querySelector('.close').addEventListener('click', function() {
+        dialog.close();
+    });
+
+
+
+    function validateQue() {
+    var questions=document.getElementsByClassName("que");
+    var countValid=0;
+    for(var i=0;i<questions.length;i++){
+        var inputs=questions[i].getElementsByTagName("input");
+        var id = questions[i].id.replace('que','');
+        var lbl = document.getElementById('lbl'+id);
+
+        for(var j=0;j<inputs.length;j++){
+            var isAnswered = false;
+            if(inputs[j].type=="radio"){
+                if(inputs[j].checked)
+                {
+                    isAnswered=true;
+                    break;
+                }
+            }
+            if(inputs[j].type=="checkbox"){
+                if(inputs[j].checked)
+                {
+                    isAnswered=true;
+                    break; //break jer može biti multiple odabir
+                }
+            }
+        }
+        var textarea=questions[i].getElementsByClassName("text");
+        for(var k=0;k<textarea.length;k++){
+            if(textarea[k].value==null ||textarea[k].value=="" || textarea[k].value.trim().length==0)
+            {
+            }else {
+                isAnswered=true;
+            }
+        }
+
+        if(isAnswered==true){
+            countValid++;
+            if(lbl!=null) {
+                lbl.innerText = "";
+            }
+        }else{
+            if(lbl!=null) {
+                lbl.innerText = "*";
+            }
+        }
+    }
+
+    if(countValid==questions.length){
+        dialog.showModal();
+    }else {
+    }
+    }
+
+
+    function validateUser() {
+        var ime=document.getElementById("ime");
+        var prezime=document.getElementById("prezime");
+        var email=document.getElementById("email");
+        var ime_error = document.getElementById("ime_error");
+        var prezime_error = document.getElementById("prezime_error");
+        var email_error = document.getElementById("email_error");
+
+        var countValid=0;
+        if(ime.value==null ||ime.value==""|| ime.value.trim().length==0)
+        {
+            ime.parentElement.className += ' is-invalid';
+            ime_error.innerText="Ime je obavezno polje";
+
+        }else {
+            ime.parentElement.className.replace(' is-invalid','');
+            ime_error.innerText="";
+            countValid++;
+        }
+        if(prezime.value==null ||prezime.value=="" || prezime.value.trim().length==0)
+        {
+            prezime_error.innerText="Prezime je obavezno polje";
+            prezime.parentElement.className += ' is-invalid';
+        }else {
+            prezime.parentElement.className.replace(' is-invalid','');
+            prezime_error.innerText="";
+            countValid++;
+        }
+        if(email.value==null ||email.value==""|| email.value.trim().length==0)
+        {
+            email.parentElement.className += ' is-invalid';
+            email_error.innerText="E-mail je obavezno polje";
+        }else {
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value))
+            {
+                email_error.innerText="";
+                email.parentElement.className.replace(' is-invalid','');
+                countValid++;
+            }else {
+                email_error.innerText="E-mail mora biti u formatu: example@live.com";
+                email.parentElement.className += ' is-invalid';
+            }
+        }
+
+        if(countValid==3){
+            return true;
+        }else {
+        }
+        return false;
+    }
+
+
+</script>
+
+</body>
+</html>

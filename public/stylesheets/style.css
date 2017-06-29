@@ -1,0 +1,33 @@
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: #f4f4f4;
+}
+
+.container{
+    width: 1064px;
+    margin: 0 auto;
+}
+
+a{
+  color: #00B7FF;
+}
+
+.demo-card-wide.mdl-card {
+   width: 512px;
+ }
+.demo-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 176px;
+}
+.demo-card-wide > .mdl-card__menu {
+  color: #fff;
+}
+
+
+.demo-list-control {
+    width: 300px;
+}
+
+.demo-list-radio {
+    display: inline;
+}

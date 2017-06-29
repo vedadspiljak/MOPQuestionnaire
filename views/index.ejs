@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  </head>
+
+  <body>
+  <%- include partials/header.ejs %>
+
+  <div class="mdl-grid">
+    <div class="mdl-layout-spacer"></div>
+    <div class="mdl-cell mdl-cell--10-col">
+
+      <div class="container">
+    <% upitniks.forEach(function(upitnik) { %>
+          <div style="margin: 10px;float: left;" class="demo-card-wide mdl-card mdl-shadow--2dp">
+              <div class="mdl-card__title"  style="background: url('<%= upitnik.image_url%>')  center / cover" >
+                  <h2 class="mdl-card__title-text"><%= upitnik.naziv %></h2>
+              </div>
+              <div class="mdl-card__supporting-text">
+                  <%= upitnik.opis %>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+                  <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/start/<%= upitnik.id %>">
+                      Pokreni
+                  </a>
+              </div>
+          </div>
+          <% }); %>
+      </div>
+</div>
+    <div class="mdl-layout-spacer"></div>
+  </div>
+  </body>
+
+</html>
